@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<!-- this HTML file is licensed with CC0 1.0: https://creativecommons.org/publicdomain/zero/1.0/ -->
+<html lang="ja">
+  <head>
+    <meta charset="utf-8">
+    <title>mstdn.jp 遅延チェッカー(20200705)</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        font-family: 'BIZ UDGothic', 'MeiryoKe_Gothic', 'MS Gothic', monospace;
+        font-size: 14px;
+        color: white;
+        background: transparent;
+        border: 0;
+        width: 100%;
+      }
+      textarea {
+        resize: none;
+        height: 84px;
+      }
+      #stats {
+        height: 42px;
+      }
+    </style>
+  </head>
+  <body>
+    mstdn.jp 遅延チェッカー<br><br>
+    <textarea id="text1" readonly></textarea>
+    <textarea id="text2" readonly></textarea>
+    <textarea id="text3" readonly></textarea>
+    <textarea id="stats" readonly>connecting / connection error (pls reload)</textarea>
+    ※最終時刻はあなたの端末の時刻によります
+    <script>
+      const area = document.getElementById('stats')
+      const area1 = document.getElementById('text1')
+      const area2 = document.getElementById('text2')
+      const area3 = document.getElementById('text3')
+      let ws1, ws2
+      const getMsStr = val => {
+        const ms = (typeof val === 'number') ? (val % 1000) : val.getMilliseconds()
+        return String(ms).padStart(3, '0')
+      }
+      const log = (t) => {
+        if (!t) {
+          area.value = ''
+          return
+        }
+        const datestr = (new Date).toLocaleString()
+        area.value = `[${datestr}] ${t}`
+      }
+      const connect1 = () => {
+        ws1 = new WebSocket('wss://mstdn.jp/api/v1/streaming/?stream=public:local')
+        ws1.addEventListener('message', ev => {
+          const o = JSON.parse(ev.data)
+          if (o.event === 'update') {
+            const toot = JSON.parse(o.payload)
+            const now = new Date
+            const tootDate = new Date(toot.created_at)
+            const diffMs = (now.getTime() - tootDate.getTime()) > 0 ? (now.getTime() - tootDate.getTime()) : 0
+            const diffMsOnly = getMsStr(diffMs)
+            area1.value = (`LTL最終更新..............${now.toLocaleString()}.${getMsStr(now)}\n最終トゥート投稿時間.....${tootDate.toLocaleString()}.${getMsStr(tootDate)}\nLTLの遅延は ${Math.floor(diffMs / (1000 * 60 * 60))}時間 ${Math.floor((diffMs % (1000 * 60 * 60) / (1000 * 60)))}分 ${Math.floor((diffMs % (1000 * 60) / (1000)))}.${diffMsOnly}秒 (${Math.floor(diffMs / 1000)}.${diffMsOnly}秒)`)
+          }
+        })
+        ws1.addEventListener('open', ev => {
+          log()
+        })
+        ws1.addEventListener('close', ev => {
+          log('LTL connection closed, retrying')
+          setTimeout(connect1, 10000)
+        })
+        ws1.addEventListener('error', ev => {
+          log(`LTL connection error(${ev}), retrying`)
+          ws.close()
+          setTimeout(connect1, 10000)
+        })
+      }
+      const connect2 = () => {
+        ws2 = new WebSocket('wss://mstdn.jp/api/v1/streaming/?stream=public')
+        ws2.addEventListener('message', ev => {
+          const o = JSON.parse(ev.data)
+          if (o.event === 'update') {
+            const toot = JSON.parse(o.payload)
+            if (!toot.account.acct.includes('@')) return
+            const now = new Date
+            const tootDate = new Date(toot.created_at)
+            const diffMs = (now.getTime() - tootDate.getTime()) > 0 ? (now.getTime() - tootDate.getTime()) : 0
+            const diffMsOnly = getMsStr(diffMs)
+            if (toot.media_attachments.length > 0) {
+              area3.value = (`FTL(メディア付)最終更新..${now.toLocaleString()}.${getMsStr(now)}\n最終トゥート投稿時間.....${tootDate.toLocaleString()}.${getMsStr(tootDate)}\nFTL(メディア付)の遅延は ${Math.floor(diffMs / (1000 * 60 * 60))}時間 ${Math.floor((diffMs % (1000 * 60 * 60) / (1000 * 60)))}分 ${Math.floor((diffMs % (1000 * 60) / (1000)))}.${diffMsOnly}秒 (${Math.floor(diffMs / 1000)}.${diffMsOnly}秒)`)
+            } else {
+              area2.value = (`FTL最終更新..............${now.toLocaleString()}.${getMsStr(now)}\n最終トゥート投稿時間.....${tootDate.toLocaleString()}.${getMsStr(tootDate)}\nFTLの遅延は ${Math.floor(diffMs / (1000 * 60 * 60))}時間 ${Math.floor((diffMs % (1000 * 60 * 60) / (1000 * 60)))}分 ${Math.floor((diffMs % (1000 * 60) / (1000)))}.${diffMsOnly}秒 (${Math.floor(diffMs / 1000)}.${diffMsOnly}秒)`)
+            }
+          }
+        })
+        ws2.addEventListener('open', ev => {
+          log()
+        })
+        ws2.addEventListener('close', ev => {
+          log('FTL connection closed, retrying')
+          setTimeout(connect2, 10000)
+        })
+        ws2.addEventListener('error', ev => {
+          log(`FTL connection error(${ev}), retrying`)
+          ws.close()
+          setTimeout(connect2, 10000)
+        })
+      }
+      connect1()
+      connect2()
+    </script>
+  </body>
+</html>
