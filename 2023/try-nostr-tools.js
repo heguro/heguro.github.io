@@ -19,6 +19,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     location.hash = "#" + params.toString();
   };
+  disableZoom.onchange = () => {
+    const viewport = document.querySelector("meta[name=viewport]");
+    if (disableZoom.checked) {
+      viewport.content =
+        "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no";
+    } else {
+      viewport.content = "width=device-width, initial-scale=1.0";
+    }
+  };
   const getToolsVersions = async () => {
     const res = await fetch("https://registry.npmjs.org/nostr-tools", {
       mode: "cors",
