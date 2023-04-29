@@ -19,13 +19,21 @@ document.addEventListener("DOMContentLoaded", () => {
     location.hash = params.toString();
     // loadNostrTools();
   };
-  const getLatestToolsVer = async () => {
+  const getToolsVersions = async () => {
     const res = await fetch(
-      "https://cdn.jsdelivr.net/npm/nostr-tools/package.json",
+      "https://registry.npmjs.org/nostr-tools",
       { mode: "cors" }
     );
     const json = await res.json();
-    toolsVer.placeholder = json.version;
+    const versions = Object.keys(json.versions);
+    const toolsVerDatalist = document.querySelector("#toolsVerDatalist");
+    const versionsAfterV1 = versions.slice(versions.indexOf("1.0.0")).reverse();
+    versionsAfterV1.forEach((ver) => {
+      const option = document.createElement("option");
+      option.value = ver;
+      toolsVerDatalist.appendChild(option);
+    });
+    toolsVer.placeholder = versionsAfterV1[0];
   };
   const loadNostrTools = () => {
     const ver = toolsVer.value || toolsVer.placeholder;
@@ -51,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
     eruda.init({
       tool: ["console"],
     });
-    await getLatestToolsVer();
+    await getToolsVersions();
     loadNostrTools();
   };
   window.onload = init;
