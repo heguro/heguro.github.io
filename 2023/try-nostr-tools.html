@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>try-nostr-tools</title>
+    <script src="https://cdn.jsdelivr.net/npm/eruda@3.0.0/eruda.min.js"></script>
+    <script src="try-nostr-tools.js"></script>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+      #toolsVer {
+        width: 5em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>try-nostr-tools</h1>
+    <p>
+      In this page, you can use
+      <a href="https://github.com/nbd-wtf/nostr-tools">nostr-tools</a> in your
+      browser's DevTools.
+    </p>
+    <p>
+      Also you can click or tap a button on the bottom right to open a simple
+      console if you're on mobile. (using
+      <a href="https://github.com/liriliri/eruda">Eruda</a>)
+    </p>
+    <hr />
+    <p>
+      <b>Settings</b>
+    </p>
+    <p>
+      <label>
+        <input type="checkbox" id="useEruda" checked disabled />
+        Use simple console (for mobile browsers) (TODO: make it uncheckable)
+      </label>
+    </p>
+    <p>
+      <label>
+        nostr-tools version (leave blank to use latest version):
+        <input type="text" id="toolsVer" />
+      </label>
+      <button id="reloadTools">Reload</button>
+    </p>
+    <hr />
+    <p>Author: <a href="https://snort.social/p/heguro@heguro.com">heguro</a></p>
+    <p>This page is licensed under the Unlicense (public domain).</p>
+  </body>
+</html>
