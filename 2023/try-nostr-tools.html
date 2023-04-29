@@ -38,14 +38,16 @@
         Use simple console (for mobile browsers) (TODO: make it uncheckable)
       </label>
     </p>
-    <p>
-      <label>
-        nostr-tools version (leave blank to use latest version):
-        <input type="text" id="toolsVer" list="toolsVerDatalist" />
-        <datalist id="toolsVerDatalist"></datalist>
-      </label>
-      <button id="reloadTools">Reload</button>
-    </p>
+    <form id="toolsVerForm">
+      <p>
+        <label>
+          nostr-tools version (leave blank to use latest version):
+          <input type="text" id="toolsVer" list="toolsVerDatalist" />
+          <datalist id="toolsVerDatalist"></datalist>
+        </label>
+        <button type="submit">Reload</button>
+      </p>
+    </form>
     <hr />
     <p>Author: <a href="https://snort.social/p/heguro@heguro.com">heguro</a></p>
     <p>This page is licensed under the Unlicense (public domain).</p>

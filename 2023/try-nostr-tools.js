@@ -2,7 +2,7 @@
 // for try-nostr-tools.html
 
 document.addEventListener("DOMContentLoaded", () => {
-  const params = new URLSearchParams(location.hash);
+  const params = new URLSearchParams(location.hash.slice(1));
   const loadParams = () => {
     if (params.has("ver")) {
       toolsVer.value = params.get("ver");
@@ -10,20 +10,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
   window.onhashchange = loadParams;
-  reloadTools.onclick = () => {
+  toolsVerForm.onsubmit = (e) => {
+    e.preventDefault();
     if (toolsVer.value) {
       params.set("ver", toolsVer.value);
     } else {
       params.delete("ver");
     }
-    location.hash = params.toString();
-    // loadNostrTools();
+    location.hash = "#" + params.toString();
   };
   const getToolsVersions = async () => {
-    const res = await fetch(
-      "https://registry.npmjs.org/nostr-tools",
-      { mode: "cors" }
-    );
+    const res = await fetch("https://registry.npmjs.org/nostr-tools", {
+      mode: "cors",
+    });
     const json = await res.json();
     const versions = Object.keys(json.versions);
     const toolsVerDatalist = document.querySelector("#toolsVerDatalist");
@@ -52,7 +51,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.appendChild(script);
   };
   const init = async () => {
-    const params = new URLSearchParams(location.hash);
     if (params.has("ver")) {
       toolsVer.value = params.get("ver");
     }
