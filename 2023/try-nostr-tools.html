@@ -14,6 +14,10 @@
       #toolsVer {
         width: 5em;
       }
+      #eruda #eruda-console .eruda-js-input textarea {
+        /* stop zooming on iOS Safari */
+        font-size: 16px;
+      }
     </style>
   </head>
   <body>
@@ -36,12 +40,6 @@
       <label>
         <input type="checkbox" id="useEruda" checked disabled />
         Use simple console (for mobile browsers) (TODO: make it uncheckable)
-      </label>
-    </p>
-    <p>
-      <label>
-        <input type="checkbox" id="disableZoom"/>
-        Disable zoom
       </label>
     </p>
     <form id="toolsVerForm">
