@@ -19,9 +19,17 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     location.hash = "#" + params.toString();
   };
+  showEruda.onclick = () => {
+    if (!eruda?._devTools?._isShow) {
+      eruda.show();
+    } else {
+      eruda.hide();
+    }
+  };
   const getToolsVersions = async () => {
     const res = await fetch("https://registry.npmjs.org/nostr-tools", {
       mode: "cors",
+      cache: "default",
     });
     const json = await res.json();
     const versions = Object.keys(json.versions);
