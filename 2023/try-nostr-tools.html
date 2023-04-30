@@ -8,8 +8,15 @@
     <script src="https://cdn.jsdelivr.net/npm/eruda@3.0.0/eruda.min.js"></script>
     <script src="try-nostr-tools.js"></script>
     <style>
-      body {
+      html {
         font-family: sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        html {
+          background-color: #222;
+          color: #eee;
+          color-scheme: dark;
+        }
       }
       #toolsVer {
         width: 5em;
